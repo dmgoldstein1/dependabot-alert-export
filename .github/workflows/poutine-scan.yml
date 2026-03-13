@@ -39,4 +39,8 @@ jobs:
       - name: Upload poutine SARIF file
         uses: github/codeql-action/upload-sarif@4355270be187e1b672a7a1c7c7bae5afdc1ab94a
         with:
+<<<<<<< HEAD
           sarif_file: results.sarif
+=======
+          sarif_file: results.sarif
+>>>>>>> origin/main
