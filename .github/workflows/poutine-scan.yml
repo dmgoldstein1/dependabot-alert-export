@@ -1,0 +1,42 @@
+name: Poutine Security Scan
+
+# Controls when the workflow will run
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  poutine-scan:
+    # The type of runner that the job will run on
+    runs-on: ubuntu-latest
+
+    # Permissions needed for the job
+    permissions:
+      contents: read
+      security-events: write
+
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683
+
+      # Run poutine security scan
+      - name: Poutine - GitHub Actions SAST
+        uses: boostsecurityio/poutine-action@84c0a0d32e8d57ae12651222be1eb15351429228
+        with:
+          # Format output as SARIF for GitHub code scanning integration
+          format: sarif
+          # Optional: fail on violations (set to false initially to avoid breaking workflows)
+          fail-on-violation: false
+          # Optional: verbose logging for debugging
+          verbose: false
+
+      # Upload poutine SARIF file to GitHub code scanning
+      - name: Upload poutine SARIF file
+        uses: github/codeql-action/upload-sarif@4355270be187e1b672a7a1c7c7bae5afdc1ab94a
+        with:
+          sarif_file: results.sarif
